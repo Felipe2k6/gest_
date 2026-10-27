@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block title %}{% if proveedor.id %}Editar proveedor{% else %}Nuevo proveedor{% endif %}{% endblock %}
+{% block page_title %}{% if proveedor.id %}Editar proveedor{% else %}Nuevo proveedor{% endif %} | Voltio Tech{% endblock %}
+{% block content %}
+<section class="content-surface" style="max-width: 820px;">
+    <p class="text-secondary mb-4">Los datos de contacto permiten identificar el origen de cada recepción.</p>
+    {% if error %}<div class="alert alert-danger" role="alert">{{ error }}</div>{% endif %}
+    <form method="POST" id="supplier-form">
+        {% csrf_token %}
+        <div class="row g-3">
+            <div class="col-12 col-md-6"><label for="supplier-name" class="form-label">Nombre</label><input id="supplier-name" name="nombre" class="form-control" maxlength="120" value="{{ form_data.nombre|default:proveedor.nombre|default:'' }}" required></div>
+            <div class="col-12 col-md-6"><label for="supplier-tax" class="form-label">Documento fiscal</label><input id="supplier-tax" name="documento_fiscal" class="form-control" maxlength="30" value="{{ form_data.documento_fiscal|default:proveedor.documento_fiscal|default:'' }}"></div>
+            <div class="col-12 col-md-6"><label for="supplier-phone" class="form-label">Teléfono</label><input id="supplier-phone" name="telefono" type="tel" class="form-control" maxlength="20" value="{{ form_data.telefono|default:proveedor.telefono|default:'' }}"></div>
+            <div class="col-12 col-md-6"><label for="supplier-email" class="form-label">Correo</label><input id="supplier-email" name="correo" type="email" class="form-control" value="{{ form_data.correo|default:proveedor.correo|default:'' }}"></div>
+            <div class="col-12"><label for="supplier-address" class="form-label">Dirección</label><input id="supplier-address" name="direccion" class="form-control" maxlength="255" value="{{ form_data.direccion|default:proveedor.direccion|default:'' }}"></div>
+            {% if not proveedor.id %}
+                <div class="col-12">
+                    <div class="form-check">
+                        <input id="crear-cuenta" name="crear_cuenta" type="checkbox" class="form-check-input" {% if form_data.crear_cuenta %}checked{% endif %}>
+                        <label for="crear-cuenta" class="form-check-label">Crear también una cuenta de acceso para este proveedor</label>
+                    </div>
+                </div>
+                <div id="supplier-account-fields" class="col-12" {% if not form_data.crear_cuenta %}hidden{% endif %}>
+                    <div class="row g-3">
+                        <div class="col-12 col-md-6">
+                            <label for="supplier-username" class="form-label">Nombre de usuario</label>
+                            <input id="supplier-username" name="username" class="form-control" maxlength="150" autocomplete="username" value="{{ form_data.username|default:'' }}">
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label for="supplier-password" class="form-label">Contraseña inicial</label>
+                            <input id="supplier-password" name="password" type="password" class="form-control" autocomplete="new-password">
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label for="supplier-password-confirm" class="form-label">Confirmar contraseña</label>
+                            <input id="supplier-password-confirm" name="password_confirmation" type="password" class="form-control" autocomplete="new-password">
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        <div class="d-flex gap-2 mt-4"><button type="submit" class="btn btn-primary"><i class="bi bi-check2"></i> Guardar proveedor</button><a href="/proveedores/" class="btn btn-outline-secondary">Cancelar</a></div>
+    </form>
+</section>
+{% if not proveedor.id %}
+<script>
+const createAccount = document.getElementById('crear-cuenta');
+const accountFields = document.getElementById('supplier-account-fields');
+const accountInputs = accountFields.querySelectorAll('input');
+function updateAccountFields() {
+    accountFields.hidden = !createAccount.checked;
+    for (const input of accountInputs) {
+        input.required = createAccount.checked;
+    }
+}
+createAccount.addEventListener('change', updateAccountFields);
+updateAccountFields();
+</script>
+{% endif %}
+{% endblock %}

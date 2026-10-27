@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block title %}Nuevo cliente{% endblock %}
+{% block page_title %}Nuevo cliente | Voltio Tech{% endblock %}
+{% block content %}
+
+<section class="content-surface" style="max-width: 760px;">
+    <p class="text-secondary mb-4">Registra los datos de contacto para asociarlos a sus pedidos.</p>
+    {% if error %}<div class="alert alert-danger" role="alert">{{ error }}</div>{% endif %}
+
+    <form method="POST" id="client-form">
+        {% csrf_token %}
+        <div class="row g-3">
+            <div class="col-12 col-md-6">
+                <label for="cliente-nombre" class="form-label">Nombre</label>
+                <input id="cliente-nombre" name="nombre" class="form-control" maxlength="100" value="{{ form_data.nombre|default:cliente.nombre|default:'' }}" required>
+            </div>
+            <div class="col-12 col-md-6">
+                <label for="cliente-telefono" class="form-label">Teléfono</label>
+                <input id="cliente-telefono" name="telefono" type="tel" class="form-control" maxlength="20" value="{{ form_data.telefono|default:cliente.telefono|default:'' }}" required>
+            </div>
+            <div class="col-12 col-md-6">
+                <label for="cliente-documento" class="form-label">Documento de identidad (DNI/RUT/CI)</label>
+                <input id="cliente-documento" name="documento_identidad" class="form-control" maxlength="30" value="{{ form_data.documento_identidad|default:cliente.documento_identidad|default:'' }}" required>
+            </div>
+            <div class="col-12">
+                <label for="cliente-direccion" class="form-label">Dirección</label>
+                <input id="cliente-direccion" name="direccion" class="form-control" maxlength="255" value="{{ form_data.direccion|default:cliente.direccion|default:'' }}" required>
+            </div>
+            <div class="col-12">
+                <div class="form-check">
+                    <input id="crear-cuenta" name="crear_cuenta" type="checkbox" class="form-check-input" {% if form_data.crear_cuenta %}checked{% endif %}>
+                    <label for="crear-cuenta" class="form-check-label">Crear también una cuenta de acceso para este cliente</label>
+                </div>
+            </div>
+            <div id="client-account-fields" class="col-12" {% if not form_data.crear_cuenta %}hidden{% endif %}>
+                <div class="row g-3">
+                    <div class="col-12 col-md-6">
+                        <label for="client-username" class="form-label">Nombre de usuario</label>
+                        <input id="client-username" name="username" class="form-control" maxlength="150" autocomplete="username" value="{{ form_data.username|default:'' }}">
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label for="client-email" class="form-label">Correo electrónico</label>
+                        <input id="client-email" name="email" type="email" class="form-control" value="{{ form_data.email|default:'' }}">
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label for="client-password" class="form-label">Contraseña inicial</label>
+                        <input id="client-password" name="password" type="password" class="form-control" autocomplete="new-password">
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label for="client-password-confirm" class="form-label">Confirmar contraseña</label>
+                        <input id="client-password-confirm" name="password_confirmation" type="password" class="form-control" autocomplete="new-password">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex gap-2 mt-4">
+            <button type="submit" class="btn btn-primary"><i class="bi bi-check2"></i> Guardar cliente</button>
+            <a href="/clientes/" class="btn btn-outline-secondary">Cancelar</a>
+        </div>
+    </form>
+</section>
+
+<script>
+const createAccount = document.getElementById('crear-cuenta');
+const accountFields = document.getElementById('client-account-fields');
+const accountInputs = accountFields.querySelectorAll('input');
+function updateAccountFields() {
+    accountFields.hidden = !createAccount.checked;
+    for (const input of accountInputs) {
+        input.required = createAccount.checked && input.name !== 'email';
+    }
+}
+createAccount.addEventListener('change', updateAccountFields);
+updateAccountFields();
+</script>
+
+{% endblock %}

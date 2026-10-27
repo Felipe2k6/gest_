@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}Clientes{% endblock %}
+
+{% block content %}
+
+<div class="card shadow-sm p-3">
+
+{% if user.perfil.tipo_usuario == 'admin' %}
+<a href="/crear-cliente/" class="btn btn-primary mb-3 align-self-start">
+    <i class="bi bi-person-plus"></i> Nuevo cliente
+</a>
+{% endif %}
+
+<div class="table-responsive">
+<table class="table align-middle">
+<tr>
+    <th>Registro</th>
+    <th>Documento legal</th>
+    <th>Nombre</th>
+    <th>Teléfono</th>
+    <th>Dirección</th>
+    <th></th>
+</tr>
+
+{% for cliente in clientes %}
+<tr>
+    <td class="text-secondary">#{{ cliente.id }}</td>
+    <td>{{ cliente.documento_identidad|default:'Pendiente' }}</td>
+    <td>{{ cliente.nombre }}</td>
+    <td>{{ cliente.telefono }}</td>
+    <td>{{ cliente.direccion|default:'Sin dirección' }}</td>
+    <td class="text-end">
+        {% if user.perfil.tipo_usuario == 'admin' %}
+        <a href="/editar-cliente/{{ cliente.id }}/" class="btn btn-outline-secondary btn-sm" aria-label="Editar cliente {{ cliente.nombre }}"><i class="bi bi-pencil"></i></a>
+        <a href="/eliminar-cliente/{{ cliente.id }}/" class="btn btn-outline-danger btn-sm" aria-label="Eliminar cliente {{ cliente.nombre }}" onclick="return confirm('¿Eliminar este cliente?');"><i class="bi bi-trash"></i></a>
+        {% endif %}
+    </td>
+</tr>
+{% empty %}
+<tr><td colspan="6" class="py-4 text-center text-secondary">Todavía no hay clientes registrados.</td></tr>
+{% endfor %}
+</table>
+</div>
+
+</div>
+
+{% endblock %}

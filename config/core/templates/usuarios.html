@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Usuarios{% endblock %}
+{% block page_title %}Usuarios | Voltio Tech{% endblock %}
+{% block content %}
+<section class="content-surface">
+    <div class="d-flex justify-content-between align-items-center gap-3 mb-3">
+        <div><h2 class="h5 mb-1">Cuentas de acceso</h2><p class="small text-secondary mb-0">Consulta las cuentas y sus roles. Las cuentas de clientes y proveedores se crean junto con sus fichas.</p></div>
+        <a href="/crear-usuario/" class="btn btn-primary"><i class="bi bi-person-plus"></i> Crear administrador</a>
+    </div>
+    <div class="table-responsive">
+        <table class="table align-middle mb-0">
+            <thead><tr><th>Usuario</th><th>Nombre</th><th>Rol</th><th>Vínculo</th></tr></thead>
+            <tbody>
+            {% for cuenta in usuarios %}
+            <tr>
+                <td class="fw-semibold">{{ cuenta.username }}<div class="small text-secondary">{{ cuenta.email|default:'Sin correo' }}</div></td>
+                <td>{{ cuenta.get_full_name|default:'-' }}</td>
+                <td><span class="badge text-bg-light">{{ cuenta.perfil.get_tipo_usuario_display }}</span></td>
+                <td>
+                    {% if cuenta.perfil.cliente_id %}{{ cuenta.perfil.cliente.nombre }}
+                    {% elif cuenta.perfil.proveedor_id %}{{ cuenta.perfil.proveedor.nombre }}
+                    {% else %}Sin vínculo{% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4" class="py-4 text-center text-secondary">No hay cuentas de usuario.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

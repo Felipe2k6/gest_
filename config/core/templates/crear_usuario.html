@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}Crear usuario{% endblock %}
+{% block page_title %}Crear usuario | Voltio Tech{% endblock %}
+{% block content %}
+<section class="content-surface" style="max-width: 820px;">
+    <p class="text-secondary mb-4">Crea una cuenta de administrador. Las cuentas de clientes y proveedores se crean desde sus respectivos formularios.</p>
+    {% if error %}<div class="alert alert-danger" role="alert">{{ error }}</div>{% endif %}
+    <form method="POST" id="user-form">
+        {% csrf_token %}
+        <div class="row g-3">
+            <div class="col-12 col-md-6">
+                <label for="username" class="form-label">Nombre de usuario</label>
+                <input id="username" name="username" class="form-control" maxlength="150" autocomplete="username" value="{{ form_data.username|default:'' }}" required>
+            </div>
+            <div class="col-12 col-md-6">
+                <label for="email" class="form-label">Correo electrónico</label>
+                <input id="email" name="email" type="email" class="form-control" value="{{ form_data.email|default:'' }}">
+            </div>
+            <div class="col-12 col-md-6">
+                <label for="first-name" class="form-label">Nombre</label>
+                <input id="first-name" name="first_name" class="form-control" value="{{ form_data.first_name|default:'' }}">
+            </div>
+            <div class="col-12 col-md-6">
+                <label for="last-name" class="form-label">Apellido</label>
+                <input id="last-name" name="last_name" class="form-control" value="{{ form_data.last_name|default:'' }}">
+            </div>
+            <div class="col-12 col-md-6">
+                <label for="user-password" class="form-label">Contraseña inicial</label>
+                <input id="user-password" name="password" type="password" class="form-control" autocomplete="new-password" required>
+            </div>
+            <div class="col-12 col-md-6">
+                <label for="user-password-confirm" class="form-label">Confirmar contraseña</label>
+                <input id="user-password-confirm" name="password_confirmation" type="password" class="form-control" autocomplete="new-password" required>
+            </div>
+        </div>
+        <div class="d-flex gap-2 mt-4">
+            <button type="submit" class="btn btn-primary"><i class="bi bi-person-check"></i> Crear cuenta</button>
+            <a href="/usuarios/" class="btn btn-outline-secondary">Cancelar</a>
+        </div>
+    </form>
+</section>
+{% endblock %}

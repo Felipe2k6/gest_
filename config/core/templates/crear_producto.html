@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}Nuevo producto{% endblock %}
+{% block page_title %}Nuevo producto | Voltio Tech{% endblock %}
+{% block content %}
+
+{% if user.perfil.tipo_usuario == 'admin' %}
+<section class="content-surface" style="max-width: 760px;">
+    <p class="text-secondary mb-4">Añade un artículo al catálogo de la tienda.</p>
+    {% if error %}<div class="alert alert-danger" role="alert">{{ error }}</div>{% endif %}
+    <form method="POST">
+        {% csrf_token %}
+        <div class="row g-3">
+            <div class="col-12">
+                <label for="producto-nombre" class="form-label">Nombre del producto</label>
+                <input id="producto-nombre" name="nombre" class="form-control" maxlength="100" value="{{ form_data.nombre|default:producto.nombre }}" required>
+            </div>
+            <div class="col-12 col-md-6">
+                <label for="producto-precio" class="form-label">Precio</label>
+                <div class="input-group"><span class="input-group-text">$</span><input id="producto-precio" name="precio" type="number" min="0" step="0.01" class="form-control" value="{{ form_data.precio|default:producto.precio }}" required></div>
+            </div>
+            <div class="col-12 col-md-6">
+                <label for="producto-stock" class="form-label">Stock inicial</label>
+                <input id="producto-stock" name="stock" type="number" min="0" step="1" class="form-control" value="{{ form_data.stock|default:producto.stock }}" required>
+            </div>
+        </div>
+        <div class="d-flex gap-2 mt-4">
+            <button type="submit" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Guardar producto</button>
+            <a href="/productos/" class="btn btn-outline-secondary">Cancelar</a>
+        </div>
+    </form>
+</section>
+{% else %}
+<div class="alert alert-danger">No tienes permisos para crear productos</div>
+{% endif %}
+
+{% endblock %}

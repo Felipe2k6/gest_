@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+
+<div class="row g-3">
+
+<div class="col-md-3">
+<div class="card p-3 shadow-sm text-center">
+<h6>Clientes</h6>
+<h2>{{ clientes }}</h2>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card p-3 shadow-sm text-center">
+<h6>Productos</h6>
+<h2>{{ productos }}</h2>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card p-3 shadow-sm text-center">
+<h6>Pedidos</h6>
+<h2>{{ pedidos }}</h2>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card p-3 shadow-sm text-center bg-success text-white">
+<h6>Ingresos</h6>
+<h2>$ {{ ingresos }}</h2>
+</div>
+</div>
+
+</div>
+
+<div class="card shadow-sm p-4 mt-4">
+<canvas id="grafica"></canvas>
+</div>
+
+{{ top_productos|json_script:"data" }}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const data = JSON.parse(document.getElementById('data').textContent);
+
+new Chart(document.getElementById('grafica'), {
+type: 'bar',
+data: {
+labels: data.map(p => p.nombre),
+datasets: [{ data: data.map(p => p.total) }]
+}
+});
+</script>
+
+{% endblock %}
